@@ -18,7 +18,8 @@ Agent.receive = function() {
   for(var i = 0; i < events.length; i++) {
     var currentDate = new Date();
     var allSensorData = events[i].payload.data;
-    var temperature_difference;
+    var temperature_difference_threshhold;
+    var temp_diff;
     var garageSensorData = allSensorData.sensors[GARAGE_SENSOR_ID];
     var backyardSensorData = allSensorData.sensors[BACKYARD_SENSOR_ID]
     
@@ -30,18 +31,22 @@ Agent.receive = function() {
     var backyardTemp = Agent.grabFirstTemp(backyardSensorData);
     
     if (Agent.getWeekendOrWeekday(currentDate) == 'weekday') {
-      temperature_difference = WEEKDAY_TEMP_DIFF_SWITCH;
+      temperature_difference_threshhold = WEEKDAY_TEMP_DIFF_SWITCH;
     } else {
-      temperature_difference = WEEKDEND_TEMP_DIFF_SWITCH;
+      temperature_difference_threshhold = WEEKDEND_TEMP_DIFF_SWITCH;
     }
 
-    this.log("Temp Difference" + temperature_difference);
+    this.log("Temp Difference Threshhold = " + temperature_difference_threshhold);
+
+    temp_diff = garageTemp - backyardTemp;
+    this.log("Temp Difference = " + temp_diff);
+    
 
     var targetValue = 0;
     if ((garageTemp != 0) 
           && this.isCorrectTime(currentDate)
           && (garageTemp > 70)
-          && (garageTemp > (backyardTemp + temperature_difference))) {
+          && (garageTemp > (backyardTemp + temperature_difference_threshhold))) {
         this.log("trigger garage fan on!")
         targetValue = 1;
     } else {
