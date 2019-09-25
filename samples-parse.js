@@ -48,10 +48,10 @@ Agent.receive = function() {
           && (garageTemp > 70)
           && (garageTemp > (backyardTemp + temperature_difference_threshhold))) {
         this.log("trigger garage fan on!")
-        targetValue = 1;
+        targetValue = 'on';
     } else {
         this.log("trigger garage fan off!");
-        targetValue = 0;
+        targetValue = 'off';
     }
     
     this.createEvent({'target_value' : targetValue});
